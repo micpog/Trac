@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Plugin.Geolocator;
+﻿using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
+using System;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using Position = TrackerApp.Models.Position;
 
@@ -11,12 +9,12 @@ namespace TrackerApp
 {
     public partial class MainPage : ContentPage
     {
-        public List<Models.Position> Positions;
+        public ObservableCollection<Position> Positions;
         private readonly IGeolocator _geolocator;
 
         public MainPage()
         {
-            Positions = new List<Position>();
+            Positions = new ObservableCollection<Position>();
             _geolocator = CrossGeolocator.Current;
             InitializeComponent();
         }
@@ -45,7 +43,7 @@ namespace TrackerApp
                 return;
             }
 
-            Positions = new List<Position>();
+            this.Positions = new ObservableCollection<Position>();
             await _geolocator.StartListeningAsync(TimeSpan.FromSeconds(10), 10);
             _geolocator.PositionChanged += PositionChanged;
         }
@@ -64,6 +62,7 @@ namespace TrackerApp
 
             await _geolocator.StopListeningAsync();
             _geolocator.PositionChanged -= PositionChanged;
+            this.BindingContext = new MainPageViewModel(Positions);
         }
     }
 }
