@@ -64,7 +64,6 @@ namespace TrackerApp
 
             await _geolocator.StopListeningAsync();
             _geolocator.PositionChanged -= PositionChanged;
-            Coordinates.ItemsSource = Positions;
         }
     }
 }

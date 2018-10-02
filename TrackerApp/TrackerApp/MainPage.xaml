@@ -5,21 +5,27 @@
              x:Class="TrackerApp.MainPage">
 
     <StackLayout>
-        <!-- Place new controls here -->
-    	<Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
         <Button Text="Start tracking" Clicked="Button_StartTracking"></Button>
         <Button Text="Stop tracking" Clicked="Button_StopTracking"></Button>
-        <ListView x:Name="Coordinates">
-            <ListView.ItemTemplate>
+        <TableView Intent="Data">
+            <TableRoot>
+                <TableSection Title="Coordinates">
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Latitude}"/>
+                            <Label Text="{Binding Longitude}"/>
+                        </StackLayout>
+                    </ViewCell>
+                </TableSection>
+                <!--<ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Label Text="{Binding Latitude}"></Label>
                     </ViewCell>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ListView.ItemTemplate>-->
+            </TableRoot>
+        </TableView>
     </StackLayout>
 
 </ContentPage>
