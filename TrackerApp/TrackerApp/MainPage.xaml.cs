@@ -17,6 +17,7 @@ namespace TrackerApp
             Positions = new ObservableCollection<Position>();
             _geolocator = CrossGeolocator.Current;
             InitializeComponent();
+            this.BindingContext = new MainPageViewModel(DisplayAlert());
         }
 
         private async void Button_StartTracking(object sender, EventArgs e)

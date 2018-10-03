@@ -1,23 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:ext="clr-namespace:TrackerApp.;assembly=TrackerApp.Android.MonoAndroid,Version=v8.1"
-             x:Class="ContentPage">
+             xmlns:local="clr-namespace:TrackerApp"
+             x:Class="TrackerApp.MainPage">
 
-    <Button Text="Start tracking" Clicked="Button_StartTracking" />
-    <Button Text="Stop tracking" Clicked="Button_StopTracking" />
-    <TableView Intent="Data" ="{Binding MainPageViewModel}">
-        <TableRoot>
-            <TableSection Title="Coordinates">
-                <ViewCell>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="{Binding Latitude}"/>
-                    </StackLayout>
-                </ViewCell>
-            </TableSection>
-        </TableRoot>
-    </TableView>
+    <StackLayout>
+        <Button Text="Start tracking" Clicked="Button_StartTracking" />
+        <Button Text="Stop tracking" Clicked="Button_StopTracking" />
+        <TableView Intent="Form" BindingContext="{Binding MainPageViewModel}">
+            <TableRoot>
+                <TableSection Title="Coordinates">
+                    <TextCell Text="{Binding Latitude}"/>
+                    <TextCell Text="{Binding Longitude}"/>
+                </TableSection>
+            </TableRoot>
+        </TableView>
+    </StackLayout>
 </ContentPage>
-
-
-
