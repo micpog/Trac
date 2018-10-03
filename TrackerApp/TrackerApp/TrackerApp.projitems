@@ -21,5 +21,6 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MainPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Position.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RelayCommand.cs" />
   </ItemGroup>
 </Project>

@@ -5,8 +5,8 @@
              x:Class="TrackerApp.MainPage">
 
     <StackLayout>
-        <Button Text="Start tracking" Clicked="Button_StartTracking" />
-        <Button Text="Stop tracking" Clicked="Button_StopTracking" />
+        <Button Text="Start tracking" Command="{Binding StartTrackingCommand}" />
+        <Button Text="Stop tracking" Command="{Binding StopTrackingCommand}" />
         <TableView Intent="Form" BindingContext="{Binding MainPageViewModel}">
             <TableRoot>
                 <TableSection Title="Coordinates">

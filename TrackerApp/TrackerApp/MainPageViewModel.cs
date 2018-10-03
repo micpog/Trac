@@ -4,12 +4,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
-using TrackerApp.Droid.Annotations;
+using Xamarin.Forms;
 using Position = TrackerApp.Models.Position;
 
 namespace TrackerApp
 {
-    public class MainPageViewModel : INotifyPropertyChanged
+    public class MainPageViewModel : Page, INotifyPropertyChanged
     {
         private ObservableCollection<Position> _positions;
         private readonly IGeolocator _geolocator;
@@ -18,9 +18,11 @@ namespace TrackerApp
         {
             _geolocator = CrossGeolocator.Current;
             StartTrackingCommand = new RelayCommand(StartTracking);
+            StopTrackingCommand = new RelayCommand(StopTracking);
         }
 
-        public RelayCommand StartTrackingCommand { get; set; }
+        public RelayCommand StartTrackingCommand { get; }
+        public RelayCommand StopTrackingCommand { get; }
 
         public ObservableCollection<Position> Positions
         {
@@ -64,9 +66,19 @@ namespace TrackerApp
             _geolocator.PositionChanged += PositionChanged;
         }
 
+        private async void StopTracking()
+        {
+            if (!_geolocator.IsListening)
+            {
+                return;
+            }
+
+            await _geolocator.StopListeningAsync();
+            _geolocator.PositionChanged -= PositionChanged;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
