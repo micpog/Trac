@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Globalization;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
-using Xamarin.Forms;
+using TrackerApp.Models.Section;
 using Position = TrackerApp.Models.Position;
 
 namespace TrackerApp
 {
-    public class MainPageViewModel : Page, INotifyPropertyChanged
+    public class MainPageViewModel : BaseViewModel
     {
         private ObservableCollection<Position> _positions;
         private readonly IGeolocator _geolocator;
@@ -75,18 +75,32 @@ namespace TrackerApp
 
             await _geolocator.StopListeningAsync();
             _geolocator.PositionChanged -= PositionChanged;
-        }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void PositionChanged(object sender, PositionEventArgs args)
         {
             Positions.Add(new Position(args.Position));
+        }
+
+        private void SetCoordinates()
+        {
+            var coordinates = _positions;
+
+            var coordinatesSection = new Section { Header = "Coordinates" };
+            foreach (var position in _positions)
+            {
+                AddTextRowIfNotEmpty(coordinatesSection.SectionRows, position.Longitude, position.Latitude);
+            }
+        }
+
+        private void AddTextRowIfNotEmpty(IList<ISectionRow> sectionRows, double longitude, double latitude)
+        {
+            if (!string.IsNullOrEmpty(longitude.ToString(CultureInfo.CurrentCulture)))
+            {
+                sectionRows.Add(new CoordinatesRow { Latitude = latitude, Longitude = longitude });
+            }
         }
     }
 }

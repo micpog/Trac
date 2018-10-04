@@ -7,13 +7,6 @@
     <StackLayout>
         <Button Text="Start tracking" Command="{Binding StartTrackingCommand}" />
         <Button Text="Stop tracking" Command="{Binding StopTrackingCommand}" />
-        <TableView Intent="Form" BindingContext="{Binding MainPageViewModel}">
-            <TableRoot>
-                <TableSection Title="Coordinates">
-                    <TextCell Text="{Binding Latitude}"/>
-                    <TextCell Text="{Binding Longitude}"/>
-                </TableSection>
-            </TableRoot>
-        </TableView>
+        <TableView Intent="Form" />
     </StackLayout>
 </ContentPage>
