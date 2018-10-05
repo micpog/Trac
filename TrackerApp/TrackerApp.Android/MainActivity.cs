@@ -19,6 +19,7 @@ namespace TrackerApp.Droid
             CrossCurrentActivity.Current.Activity = this;
             base.OnCreate(bundle);
             Xamarin.Forms.Forms.Init(this, bundle);
+            Xamarin.FormsGoogleMaps.Init(this, bundle);
             LoadApplication(new App());
         }
 

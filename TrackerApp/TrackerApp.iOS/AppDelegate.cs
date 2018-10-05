@@ -23,6 +23,7 @@ namespace TrackerApp.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
+            Xamarin.FormsGoogleMaps.Init("AIzaSyDvdNJcJn3_ZNQm3Hjz2xDpUWgbmaxLRu0");
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);
