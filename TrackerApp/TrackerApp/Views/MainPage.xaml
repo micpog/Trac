@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             x:Class="TrackerApp.MainPage"
+             xmlns:trackerApp="clr-namespace:TrackerApp">
+    <ContentPage.Resources>
+        <sys:String sys:key="FormatToTwoDecimalPoints">{0:0.00}</sys:String>
+    </ContentPage.Resources>
+    <ContentPage.BindingContext>
+        <trackerApp:MainPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout>
+            <Button Text="Start tracking" Command="{Binding StartTrackingCommand}" />
+            <Button Text="Stop tracking" Command="{Binding StopTrackingCommand}" />
+            <ListView ItemsSource="{Binding Positions}" IsVisible="{Binding CanDisplay}">
+                <ListView.Header>
+                    <StackLayout>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label HorizontalOptions="Center" Grid.Column="0" Text="Longitude"/>
+                            <Label HorizontalOptions="Center" Grid.Column="1 " Text="Latitude"/>
+                        </Grid>
+                    </StackLayout>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="20"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition  Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Row="1" Grid.Column="0" HorizontalOptions="Center" Text="{Binding Longitude, StringFormat={StaticResource FormatToTwoDecimalPoints}}/>
+                                <Label Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" Text="{Binding Latitude, StringFormat={StaticResource FormatToTwoDecimalPoints}}/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
-using TrackerApp.Models.Section;
 using Position = TrackerApp.Models.Position;
 
 namespace TrackerApp
@@ -13,6 +10,7 @@ namespace TrackerApp
     {
         private ObservableCollection<Position> _positions;
         private readonly IGeolocator _geolocator;
+        private bool _canDisplay;
 
         public MainPageViewModel()
         {
@@ -23,6 +21,16 @@ namespace TrackerApp
 
         public RelayCommand StartTrackingCommand { get; }
         public RelayCommand StopTrackingCommand { get; }
+
+        public bool CanDisplay
+        {
+            get => _canDisplay;
+            private set
+            {
+                _canDisplay = value;
+                OnPropertyChanged(nameof(CanDisplay));
+            }
+        }
 
         public ObservableCollection<Position> Positions
         {
@@ -61,6 +69,7 @@ namespace TrackerApp
                 return;
             }
 
+            CanDisplay = false;
             this.Positions = new ObservableCollection<Position>();
             await _geolocator.StartListeningAsync(TimeSpan.FromSeconds(10), 10);
             _geolocator.PositionChanged += PositionChanged;
@@ -75,32 +84,12 @@ namespace TrackerApp
 
             await _geolocator.StopListeningAsync();
             _geolocator.PositionChanged -= PositionChanged;
-
-
+            CanDisplay = true;
         }
 
         private void PositionChanged(object sender, PositionEventArgs args)
         {
             Positions.Add(new Position(args.Position));
-        }
-
-        private void SetCoordinates()
-        {
-            var coordinates = _positions;
-
-            var coordinatesSection = new Section { Header = "Coordinates" };
-            foreach (var position in _positions)
-            {
-                AddTextRowIfNotEmpty(coordinatesSection.SectionRows, position.Longitude, position.Latitude);
-            }
-        }
-
-        private void AddTextRowIfNotEmpty(IList<ISectionRow> sectionRows, double longitude, double latitude)
-        {
-            if (!string.IsNullOrEmpty(longitude.ToString(CultureInfo.CurrentCulture)))
-            {
-                sectionRows.Add(new CoordinatesRow { Latitude = latitude, Longitude = longitude });
-            }
         }
     }
 }
