@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:maps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
              x:Class="TrackerApp.MainPage"
              xmlns:trackerApp="clr-namespace:TrackerApp">
     <ContentPage.Resources>
@@ -13,7 +14,7 @@
         <StackLayout>
             <Button Text="Start tracking" Command="{Binding StartTrackingCommand}" />
             <Button Text="Stop tracking" Command="{Binding StopTrackingCommand}" />
-            <ListView ItemsSource="{Binding Positions}" IsVisible="{Binding CanDisplay}">
+            <!--<ListView ItemsSource="{Binding Positions}" IsVisible="{Binding CanDisplay}">
                 <ListView.Header>
                     <StackLayout>
                         <Grid>
@@ -55,7 +56,9 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
+            <maps:Map BindingContext="{Binding Map}"
+                      VerticalOptions="FillAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
