@@ -15,24 +15,18 @@ namespace TrackerApp
         private const double Tolerance = 0.00001;
 
         private ObservableCollection<Position> _positions;
-        private IGeolocator _geolocator;
-        private Map _map = new Map();
+        private readonly IGeolocator _geolocator;
         private bool _canDisplay;
 
         public MainPageViewModel()
-        {
-            Initialize();
-        }
-
-        private void Initialize()
         {
             _geolocator = CrossGeolocator.Current;
             StartTrackingCommand = new RelayCommand(StartTracking);
             StopTrackingCommand = new RelayCommand(StopTracking);
         }
 
-        public RelayCommand StartTrackingCommand { get; set; }
-        public RelayCommand StopTrackingCommand { get; set; }
+        public RelayCommand StartTrackingCommand { get; }
+        public RelayCommand StopTrackingCommand { get; }
 
         public bool CanDisplay
         {
@@ -43,6 +37,10 @@ namespace TrackerApp
                 OnPropertyChanged(nameof(CanDisplay));
             }
         }
+
+        public ObservableCollection<Circle> Circles { get; set; } = new ObservableCollection<Circle>();
+
+        public ObservableCollection<Polyline> Polylines { get; set; } = new ObservableCollection<Polyline>();
 
         public ObservableCollection<Position> Positions
         {
@@ -106,11 +104,6 @@ namespace TrackerApp
             DrawPoint(Positions.ToList());
         }
 
-        private void ResetMap()
-        {
-            Initialize();
-        }
-
         private void DrawPoint(List<Position> positions)
         {
             var position = positions.First();
@@ -121,7 +114,8 @@ namespace TrackerApp
                 Radius = Distance.FromMeters(500),
                 Center = new Xamarin.Forms.GoogleMaps.Position(position.Latitude, position.Longitude)
             };
-            _map.Circles.Add(circle);
+
+            Circles.Add(circle);
         }
 
         private void PositionChanged(object sender, PositionEventArgs args)
@@ -148,7 +142,7 @@ namespace TrackerApp
                 polyline.Positions.Add(new Xamarin.Forms.GoogleMaps.Position(position.Latitude, position.Longitude));
             }
 
-            _map.Polylines.Add(polyline);
+            Polylines.Add(polyline);
         }
     }
 }

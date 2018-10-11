@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:maps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:bindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
              x:Class="TrackerApp.MainPage"
              xmlns:trackerApp="clr-namespace:TrackerApp">
     <ContentPage.Resources>
@@ -57,8 +58,11 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>-->
-            <maps:Map BindingContext="{Binding Map}"
-                      VerticalOptions="FillAndExpand"/>
+            <maps:Map VerticalOptions="FillAndExpand">
+                <maps:Map.Behaviors>
+                    <bindings:BindingPolylinesBehavior Value="{Binding Circles}"/>
+                </maps:Map.Behaviors>
+            </maps:Map>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
