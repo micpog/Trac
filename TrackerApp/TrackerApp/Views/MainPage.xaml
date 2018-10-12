@@ -58,11 +58,16 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>-->
-            <maps:Map VerticalOptions="FillAndExpand">
+            <maps:Map x:Name="MyMap" HorizontalOptions="Fill" VerticalOptions="FillAndExpand" MyLocationEnabled="True">
+                <maps:Map.Behaviors>
+                    <bindings:MoveCameraBehavior Request="{Binding MoveCameraRequest}"/>
+                </maps:Map.Behaviors>
+            </maps:Map>
+            <!--<maps:Map VerticalOptions="FillAndExpand">
                 <maps:Map.Behaviors>
                     <bindings:BindingPolylinesBehavior Value="{Binding Circles}"/>
                 </maps:Map.Behaviors>
-            </maps:Map>
+            </maps:Map>-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

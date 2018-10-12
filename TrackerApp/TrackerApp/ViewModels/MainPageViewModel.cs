@@ -6,6 +6,7 @@ using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
+using Xamarin.Forms.GoogleMaps.Bindings;
 using Position = TrackerApp.Models.Position;
 
 namespace TrackerApp
@@ -37,6 +38,8 @@ namespace TrackerApp
                 OnPropertyChanged(nameof(CanDisplay));
             }
         }
+
+        public MoveCameraRequest MoveCameraRequest { get; set; } = new MoveCameraRequest();
 
         public ObservableCollection<Circle> Circles { get; set; } = new ObservableCollection<Circle>();
 
@@ -100,8 +103,11 @@ namespace TrackerApp
             {
                 DrawPolyline(Positions.ToList());
             }
+            else if (Positions.Count == 1)
+            {
+                DrawPoint(Positions.ToList());
 
-            DrawPoint(Positions.ToList());
+            }
         }
 
         private void DrawPoint(List<Position> positions)
@@ -110,12 +116,16 @@ namespace TrackerApp
             var circle = new Circle
             {
                 StrokeColor = Color.DarkGreen,
-                StrokeWidth = (float) 0.1d,
+                StrokeWidth = (float)0.1d,
                 Radius = Distance.FromMeters(500),
                 Center = new Xamarin.Forms.GoogleMaps.Position(position.Latitude, position.Longitude)
             };
 
             Circles.Add(circle);
+            MoveCameraRequest.MoveCamera
+                (CameraUpdateFactory.NewCameraPosition(
+                new CameraPosition(
+                    new Xamarin.Forms.GoogleMaps.Position(circle.Center.Latitude, circle.Center.Longitude), 17d)));
         }
 
         private void PositionChanged(object sender, PositionEventArgs args)
@@ -143,6 +153,10 @@ namespace TrackerApp
             }
 
             Polylines.Add(polyline);
+            MoveCameraRequest.MoveCamera
+            (CameraUpdateFactory.NewCameraPosition(
+                new CameraPosition(
+                    new Xamarin.Forms.GoogleMaps.Position(polyline.Positions.First().Latitude, polyline.Positions.First().Longitude), 17d)));
         }
     }
 }
