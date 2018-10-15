@@ -125,7 +125,7 @@ namespace TrackerApp
             MoveCameraRequest.MoveCamera
                 (CameraUpdateFactory.NewCameraPosition(
                 new CameraPosition(
-                    new Xamarin.Forms.GoogleMaps.Position(circle.Center.Latitude, circle.Center.Longitude), 17d)));
+                    new Xamarin.Forms.GoogleMaps.Position(circle.Center.Latitude, circle.Center.Longitude), 14d)));
         }
 
         private void PositionChanged(object sender, PositionEventArgs args)
@@ -156,7 +156,7 @@ namespace TrackerApp
             MoveCameraRequest.MoveCamera
             (CameraUpdateFactory.NewCameraPosition(
                 new CameraPosition(
-                    new Xamarin.Forms.GoogleMaps.Position(polyline.Positions.First().Latitude, polyline.Positions.First().Longitude), 17d)));
+                    new Xamarin.Forms.GoogleMaps.Position(polyline.Positions.First().Latitude, polyline.Positions.First().Longitude), 9d)));
         }
     }
 }

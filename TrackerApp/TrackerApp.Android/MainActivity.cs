@@ -1,10 +1,5 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using Plugin.CurrentActivity;
 using Plugin.Permissions;
@@ -17,9 +12,12 @@ namespace TrackerApp.Droid
         protected override void OnCreate(Bundle bundle)
         {
             CrossCurrentActivity.Current.Activity = this;
+
             base.OnCreate(bundle);
+
             Xamarin.Forms.Forms.Init(this, bundle);
             Xamarin.FormsGoogleMaps.Init(this, bundle);
+
             LoadApplication(new App());
         }
 
