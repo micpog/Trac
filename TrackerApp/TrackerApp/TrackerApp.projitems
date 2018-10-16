@@ -16,6 +16,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)BackgroundProcessing\MessagingCenter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BackgroundProcessing\StartTrackingTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BackgroundProcessing\StopTrackingTask.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Const.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\MainPage.xaml.cs">
@@ -26,7 +29,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)RelayCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)ViewModels\" />
     <Folder Include="$(MSBuildThisFileDirectory)Views\" />
   </ItemGroup>
 </Project>

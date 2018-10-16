@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 using Xamarin.Forms;
@@ -17,7 +18,6 @@ namespace TrackerApp
 
         private ObservableCollection<Position> _positions;
         private readonly IGeolocator _geolocator;
-        private bool _canDisplay;
 
         public MainPageViewModel()
         {
@@ -29,19 +29,7 @@ namespace TrackerApp
         public RelayCommand StartTrackingCommand { get; }
         public RelayCommand StopTrackingCommand { get; }
 
-        public bool CanDisplay
-        {
-            get => _canDisplay;
-            private set
-            {
-                _canDisplay = value;
-                OnPropertyChanged(nameof(CanDisplay));
-            }
-        }
-
         public MoveCameraRequest MoveCameraRequest { get; set; } = new MoveCameraRequest();
-
-        public ObservableCollection<Circle> Circles { get; set; } = new ObservableCollection<Circle>();
 
         public ObservableCollection<Polyline> Polylines { get; set; } = new ObservableCollection<Polyline>();
 
@@ -60,20 +48,8 @@ namespace TrackerApp
 
         private async void StartTracking()
         {
-            Console.WriteLine("####### Checking location is enabled.");
-            if (!_geolocator.IsGeolocationEnabled)
+            if (await ValidateGeolocationPermission())
             {
-                await DisplayAlert("Location", "Please turn on location services.", "Ok");
-                return;
-            }
-
-            var result = await Plugin.Permissions.CrossPermissions.Current.RequestPermissionsAsync(new[] { Plugin.Permissions.Abstractions.Permission.Location });
-            var status = result[Plugin.Permissions.Abstractions.Permission.Location];
-
-            Console.WriteLine("####### Checking permissions.");
-            if (status != Plugin.Permissions.Abstractions.PermissionStatus.Granted)
-            {
-                await DisplayAlert("Location", "Location is required for GPS. Device data cannot be saved.", "Cancel");
                 return;
             }
 
@@ -82,10 +58,33 @@ namespace TrackerApp
                 return;
             }
 
-            CanDisplay = false;
-            this.Positions = new ObservableCollection<Position>();
+            Positions = new ObservableCollection<Position>();
             await _geolocator.StartListeningAsync(TimeSpan.FromSeconds(2), 0);
             _geolocator.PositionChanged += PositionChanged;
+        }
+
+        private async Task<bool> ValidateGeolocationPermission()
+        {
+            Console.WriteLine("####### Checking location is enabled.");
+            if (!_geolocator.IsGeolocationEnabled)
+            {
+                await DisplayAlert("Location", "Please turn on location services.", "Ok");
+                return true;
+            }
+
+            var result =
+                await Plugin.Permissions.CrossPermissions.Current.RequestPermissionsAsync(new[]
+                    {Plugin.Permissions.Abstractions.Permission.Location});
+            var status = result[Plugin.Permissions.Abstractions.Permission.Location];
+
+            Console.WriteLine("####### Checking permissions.");
+            if (status != Plugin.Permissions.Abstractions.PermissionStatus.Granted)
+            {
+                await DisplayAlert("Location", "Location is required for GPS. Device data cannot be saved.", "Cancel");
+                return true;
+            }
+
+            return false;
         }
 
         private async void StopTracking()
@@ -98,7 +97,6 @@ namespace TrackerApp
             await _geolocator.StopListeningAsync();
             _geolocator.PositionChanged -= PositionChanged;
 
-            CanDisplay = true;
             if (Positions.Count < 2)
             {
                 return;
