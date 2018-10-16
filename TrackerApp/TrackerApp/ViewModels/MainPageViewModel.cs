@@ -99,33 +99,12 @@ namespace TrackerApp
             _geolocator.PositionChanged -= PositionChanged;
 
             CanDisplay = true;
-            if (Positions.Count > 1)
+            if (Positions.Count < 2)
             {
-                DrawPolyline(Positions.ToList());
+                return;
             }
-            else if (Positions.Count == 1)
-            {
-                DrawPoint(Positions.ToList());
 
-            }
-        }
-
-        private void DrawPoint(List<Position> positions)
-        {
-            var position = positions.First();
-            var circle = new Circle
-            {
-                StrokeColor = Color.DarkGreen,
-                StrokeWidth = (float)0.1d,
-                Radius = Distance.FromMeters(500),
-                Center = new Xamarin.Forms.GoogleMaps.Position(position.Latitude, position.Longitude)
-            };
-
-            Circles.Add(circle);
-            MoveCameraRequest.MoveCamera
-                (CameraUpdateFactory.NewCameraPosition(
-                new CameraPosition(
-                    new Xamarin.Forms.GoogleMaps.Position(circle.Center.Latitude, circle.Center.Longitude), 14d)));
+            DrawPolyline(Positions.ToList());
         }
 
         private void PositionChanged(object sender, PositionEventArgs args)
