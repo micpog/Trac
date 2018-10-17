@@ -16,10 +16,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)BackgroundProcessing\MessagingCenter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BackgroundProcessing\StartTrackingTask.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BackgroundProcessing\StopTrackingTask.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Const.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\CancelledMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\NewPositionMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\StartTrackingTaskMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\StopTrackingTaskMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
