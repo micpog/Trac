@@ -1,8 +1,13 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Plugin.CurrentActivity;
 using Plugin.Permissions;
+using TrackerApp.BackgroundProcessing;
+using TrackerApp.Droid.Services;
+using Application = Xamarin.Forms.Application;
+using MessagingCenter = Xamarin.Forms.MessagingCenter;
 
 namespace TrackerApp.Droid
 {
@@ -18,13 +23,30 @@ namespace TrackerApp.Droid
             Xamarin.Forms.Forms.Init(this, bundle);
             Xamarin.FormsGoogleMaps.Init(this, bundle);
 
-            LoadApplication(new App());
+            LoadApplication(new Application());
+
+            WireUpLongRunningTracking();
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
         {
             PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        private void WireUpLongRunningTracking()
+        {
+            MessagingCenter.Subscribe<StartTrackingTaskMessage>(this, nameof(StartTrackingTaskMessage), message =>
+            {
+                var intent = new Intent(this, typeof(TrackingService));
+                StartForegroundService(intent);
+            });
+
+            MessagingCenter.Subscribe<StopTrackingTaskMessage>(this, nameof(StopTrackingTaskMessage), message =>
+            {
+                var intent = new Intent(this, typeof(TrackingService));
+                StopService(intent);
+            });
         }
     }
 }

@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
+using TrackerApp.BackgroundProcessing;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 using Xamarin.Forms.GoogleMaps.Bindings;
+using MessagingCenter = Xamarin.Forms.MessagingCenter;
 using Position = TrackerApp.Models.Position;
 
 namespace TrackerApp
@@ -24,6 +26,8 @@ namespace TrackerApp
             _geolocator = CrossGeolocator.Current;
             StartTrackingCommand = new RelayCommand(StartTracking);
             StopTrackingCommand = new RelayCommand(StopTracking);
+
+            HandleReceivedMessages();
         }
 
         public RelayCommand StartTrackingCommand { get; }
@@ -58,9 +62,19 @@ namespace TrackerApp
                 return;
             }
 
-            Positions = new ObservableCollection<Position>();
-            await _geolocator.StartListeningAsync(TimeSpan.FromSeconds(2), 0);
-            _geolocator.PositionChanged += PositionChanged;
+            var message = new StartTrackingTaskMessage();
+            MessagingCenter.Send(message, nameof(StartTrackingTaskMessage));
+        }
+
+        private void StopTracking()
+        {
+            if (!_geolocator.IsListening)
+            {
+                return;
+            }
+
+            var message = new StopTrackingTaskMessage();
+            MessagingCenter.Send(message, nameof(StopTrackingTaskMessage));
         }
 
         private async Task<bool> ValidateGeolocationPermission()
@@ -85,24 +99,6 @@ namespace TrackerApp
             }
 
             return false;
-        }
-
-        private async void StopTracking()
-        {
-            if (!_geolocator.IsListening)
-            {
-                return;
-            }
-
-            await _geolocator.StopListeningAsync();
-            _geolocator.PositionChanged -= PositionChanged;
-
-            if (Positions.Count < 2)
-            {
-                return;
-            }
-
-            DrawPolyline(Positions.ToList());
         }
 
         private void PositionChanged(object sender, PositionEventArgs args)
@@ -134,6 +130,35 @@ namespace TrackerApp
             (CameraUpdateFactory.NewCameraPosition(
                 new CameraPosition(
                     new Xamarin.Forms.GoogleMaps.Position(polyline.Positions.First().Latitude, polyline.Positions.First().Longitude), 9d)));
+        }
+
+        private void HandleReceivedMessages()
+        {
+            MessagingCenter.Subscribe<NewPositionMessage>(this, nameof(NewPositionMessage), message =>
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    Positions = new ObservableCollection<Position>();
+                    await _geolocator.StartListeningAsync(TimeSpan.FromSeconds(2), 0);
+                    _geolocator.PositionChanged += PositionChanged;
+                });
+            });
+
+            MessagingCenter.Subscribe<CancelledMessage>(this, nameof(CancelledMessage), message =>
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await _geolocator.StopListeningAsync();
+                    _geolocator.PositionChanged -= PositionChanged;
+
+                    if (Positions.Count < 2)
+                    {
+                        return;
+                    }
+
+                    DrawPolyline(Positions.ToList());
+                });
+            });
         }
     }
 }

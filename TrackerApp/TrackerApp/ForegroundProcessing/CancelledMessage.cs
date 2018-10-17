@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TrackerApp.BackgroundProcessing
 {
-    class StopTrackingTask
+    public class CancelledMessage
     {
     }
 }
