@@ -58,9 +58,10 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>-->
-            <maps:Map x:Name="MyMap" HorizontalOptions="Fill" VerticalOptions="FillAndExpand" MyLocationEnabled="True">
+            <maps:Map HorizontalOptions="Fill" VerticalOptions="FillAndExpand" MyLocationEnabled="True">
                 <maps:Map.Behaviors>
-                    <bindings:MoveCameraBehavior Request="{Binding MoveCameraRequest}"/>
+                    <bindings:BindingPolylinesBehavior Value="{Binding Polylines}"/>
+                    <bindings:MoveCameraBehavior BindingContext="{Binding MoveCameraRequest}"/>
                 </maps:Map.Behaviors>
             </maps:Map>
             <!--<maps:Map VerticalOptions="FillAndExpand">

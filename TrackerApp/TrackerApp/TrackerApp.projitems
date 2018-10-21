@@ -17,10 +17,15 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Const.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\DialogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\CancelledMessage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\NewPositionMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\NewPathMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\StartTrackingTaskMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\StopTrackingTaskMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IDialogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ITrackerService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\TrackerService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TrackerModule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
