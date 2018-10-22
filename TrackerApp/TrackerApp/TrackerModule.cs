@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using TrackerApp.Droid;
 using TrackerApp.Services;
 
 namespace TrackerApp
@@ -9,8 +10,6 @@ namespace TrackerApp
         {
             builder.RegisterType<TrackerService>().As<ITrackerService>();
             builder.RegisterType<DialogService>().As<IDialogService>();
-
-            var container = builder.Build();
         }
     }
 }

@@ -1,5 +1,8 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Autofac.Extras.CommonServiceLocator;
+using Autofac;
+using CommonServiceLocator;
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace TrackerApp
@@ -15,7 +18,11 @@ namespace TrackerApp
 
 		protected override void OnStart ()
 		{
-			// Handle when your app starts
+            var containerBuilder = new ContainerBuilder();;
+		    containerBuilder.RegisterModule<TrackerModule>();
+		    var container = containerBuilder.Build();
+
+            ServiceLocator.SetLocatorProvider(() => new AutofacServiceLocator(container));
 		}
 
 		protected override void OnSleep ()

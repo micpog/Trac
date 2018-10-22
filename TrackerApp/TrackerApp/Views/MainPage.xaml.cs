@@ -1,4 +1,6 @@
-﻿using Xamarin.Forms;
+﻿using Autofac.Extras.CommonServiceLocator;
+using CommonServiceLocator;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace TrackerApp
@@ -8,7 +10,7 @@ namespace TrackerApp
         public MainPage()
         {
             InitializeComponent();
-            this.BindingContext = new MainPageViewModel();
+            this.BindingContext = ServiceLocator.Current.GetInstance<MainPageViewModel>(); /*new MainPageViewModel();*/
         }
     }
 }
