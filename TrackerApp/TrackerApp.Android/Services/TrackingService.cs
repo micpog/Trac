@@ -2,22 +2,14 @@
 using Android.Content;
 using Android.OS;
 using Android.Util;
+using CommonServiceLocator;
 using TrackerApp.Services;
 namespace TrackerApp.Droid.Services
 {
     [Service]
     public class TrackingService : Service
     {
-        private readonly ITrackerService _trackingService;
-
-        public TrackingService(ITrackerService trackingService)
-        {
-            _trackingService = trackingService;
-        }
-
-        public TrackingService()
-        {
-        }
+        public ITrackerService TrackerService => ServiceLocator.Current.GetInstance<TrackerService>();
 
         public static string TAG = typeof(TrackingService).FullName;
 
@@ -29,15 +21,10 @@ namespace TrackerApp.Droid.Services
             return null;
         }
 
-        public override void OnCreate()
-        {
-            base.OnCreate();
-        }
-
         public override void OnDestroy()
         {
             Log.Info(TAG, "OnDestroy: The started service is shutting down.");
-            _trackingService.StopTracking().Wait();
+            TrackerService.StopTracking();
             var notificationManager = (NotificationManager) GetSystemService(NotificationService);
             notificationManager.Cancel(Consts.SERVICE_RUNNING_NOTIFICATION_ID);
             isStarted = false;
@@ -56,7 +43,7 @@ namespace TrackerApp.Droid.Services
                 {
                     Log.Info(TAG, "OnStartCommand: Service is starting.");
                     RegisterForegroundService();
-                    _trackingService.StartTracking().Wait();
+                    TrackerService.StartTracking();
                 }
             }
             else if (intent.Action.Equals(Consts.ACTION_STOP_SERVICE))

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using Plugin.Geolocator;
-using Plugin.Geolocator.Abstractions;
 using TrackerApp.BackgroundProcessing;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
