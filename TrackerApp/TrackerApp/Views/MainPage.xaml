@@ -3,72 +3,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:maps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
              xmlns:bindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
-             x:Class="TrackerApp.MainPage"
-             xmlns:trackerApp="clr-namespace:TrackerApp">
-    <ContentPage.Resources>
-        <x:String x:Key="FormatToTwoDecimalPoints">{0:0.00}</x:String>
-    </ContentPage.Resources>
-    <ContentPage.BindingContext>
-        <trackerApp:MainPageViewModel/>
-    </ContentPage.BindingContext>
+             x:Class="TrackerApp.MainPage">
     <ContentPage.Content>
-        <StackLayout>
-            <Button Text="Start tracking" Command="{Binding StartTrackingCommand}" />
-            <Button Text="Stop tracking" Command="{Binding StopTrackingCommand}" />
-            <!--<ListView ItemsSource="{Binding Positions}" IsVisible="{Binding CanDisplay}">
-                <ListView.Header>
-                    <StackLayout>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label HorizontalOptions="Center" 
-                                   Grid.Column="0" 
-                                   Text="Longitude"/>
-                            <Label HorizontalOptions="Center" 
-                                   Grid.Column="1 " 
-                                   Text="Latitude"/>
-                        </Grid>
-                    </StackLayout>
-                </ListView.Header>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="5"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition  Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Label Grid.Row="1"
-                                       Grid.Column="0"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="Center"
-                                       Text="{Binding Longitude, StringFormat={StaticResource FormatToTwoDecimalPoints}}"/>
-                                <Label Grid.Row="1"
-                                       Grid.Column="1"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="Center"
-                                       Text="{Binding Latitude, StringFormat={StaticResource FormatToTwoDecimalPoints}}"/>
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>-->
-            <maps:Map HorizontalOptions="Fill" VerticalOptions="FillAndExpand" MyLocationEnabled="True">
+        <Grid>
+            <maps:Map HorizontalOptions="Fill" VerticalOptions="FillAndExpand">
                 <maps:Map.Behaviors>
                     <bindings:BindingPolylinesBehavior Value="{Binding Polylines}"/>
-                    <bindings:MoveCameraBehavior BindingContext="{Binding MoveCameraRequest}"/>
+                    <bindings:MoveCameraBehavior Request="{Binding MoveCameraRequest}"/>
                 </maps:Map.Behaviors>
             </maps:Map>
-            <!--<maps:Map VerticalOptions="FillAndExpand">
-                <maps:Map.Behaviors>
-                    <bindings:BindingPolylinesBehavior Value="{Binding Circles}"/>
-                </maps:Map.Behaviors>
-            </maps:Map>-->
-        </StackLayout>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                    <Button 
+                    Text="Start tracking" 
+                    Command="{Binding StartTrackingCommand}"
+                    WidthRequest="100"
+                    HorizontalOptions="Center"/>
+                </StackLayout>
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                    <Button 
+                    Text="Stop tracking" 
+                    Command="{Binding StopTrackingCommand}" 
+                    WidthRequest="100"
+                    HorizontalOptions="Center"/>
+                </StackLayout>
+            </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

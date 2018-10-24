@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
-using Plugin.Permissions.Abstractions;
 using TrackerApp.BackgroundProcessing;
 using Xamarin.Forms;
 using Position = TrackerApp.Models.Position;
@@ -13,25 +13,24 @@ namespace TrackerApp.Services
 {
     public class TrackerService : ITrackerService
     {
-        private readonly IDialogService _dialogService;
         private const double Tolerance = 0.00001;
+
         private readonly List<Position> _positions = new List<Position>();
+        private readonly IPermissionValidator _permissionValidator;
+        private readonly IDialogService _dialogService;
         private readonly IGeolocator _geolocator;
 
-        public TrackerService(IDialogService dialogService)
+        public TrackerService(IPermissionValidator permissionValidator, IDialogService dialogService)
         {
+            _permissionValidator = permissionValidator;
             _dialogService = dialogService;
             _geolocator = CrossGeolocator.Current;
+            _geolocator.DesiredAccuracy = 1;
         }
 
         public async Task StartTracking()
         {
-            if (await ValidateGeolocationPermission())
-            {
-                return;
-            }
-
-            if (_geolocator.IsListening)
+            if (!await _permissionValidator.ValidateGeolocationPermission() || _geolocator.IsListening)
             {
                 return;
             }
@@ -62,6 +61,11 @@ namespace TrackerApp.Services
             });
         }
 
+        public async Task<Plugin.Geolocator.Abstractions.Position> GetCurrentPositon()
+        {
+            return await _geolocator.GetPositionAsync(TimeSpan.FromMilliseconds(500));
+        }
+
         private void PositionChanged(object sender, PositionEventArgs args)
         {
             if (_positions.Any(p => Math.Abs(p.Latitude - args.Position.Latitude) < Tolerance)
@@ -72,32 +76,5 @@ namespace TrackerApp.Services
 
             _positions.Add(new Position(args.Position));
         }
-
-        private async Task<bool> ValidateGeolocationPermission()
-        {
-            var current =
-                await Plugin.Permissions.CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Location);
-            Console.WriteLine("####### Checking location is enabled.");
-            if (!_geolocator.IsGeolocationEnabled)
-            {
-                await _dialogService.DisplayAlert("Location", "Please turn on location services.", "Ok");
-                return true;
-            }
-
-            var result =
-                await Plugin.Permissions.CrossPermissions.Current.RequestPermissionsAsync(new[]
-                    {Plugin.Permissions.Abstractions.Permission.Location});
-            var status = result[Plugin.Permissions.Abstractions.Permission.Location];
-
-            Console.WriteLine("####### Checking permissions.");
-            if (status != Plugin.Permissions.Abstractions.PermissionStatus.Granted)
-            {
-                await _dialogService.DisplayAlert("Location", "Location is required for GPS. Device data cannot be saved.", "Cancel");
-                return true;
-            }
-
-            return false;
-        }
-
     }
 }

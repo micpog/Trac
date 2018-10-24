@@ -6,5 +6,6 @@ namespace TrackerApp.Services
     {
         Task StartTracking();
         Task StopTracking();
+        Task<Plugin.Geolocator.Abstractions.Position> GetCurrentPositon();
     }
 }

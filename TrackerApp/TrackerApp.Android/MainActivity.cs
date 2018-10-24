@@ -2,7 +2,6 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
-using Android.Support.V4.Content;
 using Plugin.CurrentActivity;
 using Plugin.Permissions;
 using TrackerApp.BackgroundProcessing;
@@ -27,12 +26,12 @@ namespace TrackerApp.Droid
                 isStarted = bundle.GetBoolean(Consts.SERVICE_STARTED_KEY, false);
             }
 
-            CrossCurrentActivity.Current.Activity = this;
-
             base.OnCreate(bundle);
 
             Xamarin.Forms.Forms.Init(this, bundle);
             Xamarin.FormsGoogleMaps.Init(this, bundle);
+            Xamarin.FormsGoogleMapsBindings.Init();
+            CrossCurrentActivity.Current.Init(this, bundle);
 
             LoadApplication(new TrackerApp.App());
 
@@ -71,18 +70,18 @@ namespace TrackerApp.Droid
 
         private void WireUpLongRunningTracking()
         {
+            var serviceIntent = new Intent(this, typeof(Services.TrackingService));
+
             MessagingCenter.Subscribe<StartTrackingTaskMessage>(this, nameof(StartTrackingTaskMessage), message =>
             {
-                var startServiceIntent = new Intent(this, typeof(Services.TrackingService));
-                startServiceIntent.SetAction(Consts.ACTION_START_SERVICE);
-                StartService(startServiceIntent);
+                serviceIntent.SetAction(Consts.ACTION_START_SERVICE);
+                StartService(serviceIntent);
             });
 
             MessagingCenter.Subscribe<StopTrackingTaskMessage>(this, nameof(StopTrackingTaskMessage), message =>
             {
-                var stopServiceIntent = new Intent(this, typeof(Services.TrackingService));
-                stopServiceIntent.SetAction(Consts.ACTION_STOP_SERVICE);
-                StopService(stopServiceIntent);
+                serviceIntent.SetAction(Consts.ACTION_STOP_SERVICE);
+                StopService(serviceIntent);
             });
         }
 

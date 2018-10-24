@@ -10,9 +10,9 @@ namespace TrackerApp.Services
             await Application.Current.MainPage.DisplayAlert(title, message, accept);
         }
 
-        public async Task DisplayAlert(string title, string message, string accept, string cancel)
+        public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel)
         {
-            await Application.Current.MainPage.DisplayAlert(title, message, accept, cancel);
+            return await Application.Current.MainPage.DisplayAlert(title, message, accept, cancel);
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using TrackerApp.BackgroundProcessing;
+using TrackerApp.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 using Xamarin.Forms.GoogleMaps.Bindings;
@@ -12,10 +14,12 @@ namespace TrackerApp
 {
     public class MainPageViewModel : BaseViewModel
     {
+        private readonly IDialogService _dialogService;
         private ObservableCollection<Position> _positions;
 
-        public MainPageViewModel()
+        public MainPageViewModel(IDialogService dialogService)
         {
+            _dialogService = dialogService;
             StartTrackingCommand = new RelayCommand(StartTracking);
             StopTrackingCommand = new RelayCommand(StopTracking);
 
@@ -27,7 +31,7 @@ namespace TrackerApp
 
         public MoveCameraRequest MoveCameraRequest { get; } = new MoveCameraRequest();
 
-        public ObservableCollection<Polyline> Polylines { get; set; } = new ObservableCollection<Polyline>();
+        public ObservableCollection<Polyline> Polylines { get; set; }
 
         public ObservableCollection<Position> Positions
         {
@@ -42,14 +46,31 @@ namespace TrackerApp
             }
         }
 
-        private void StartTracking()
+        private async void StartTracking()
         {
+            if (_positions != null && _positions.Any())
+            {
+                var confirmed = await _dialogService.DisplayAlert("Warning", "Confirm to clear previous path", "Confirm", "Cancel");
+                if (!confirmed)
+                {
+                    return;
+                }
+
+                _positions.Clear();
+            }
+
             var message = new StartTrackingTaskMessage();
             MessagingCenter.Send(message, nameof(StartTrackingTaskMessage));
         }
 
-        private void StopTracking()
+        private async void StopTracking()
         {
+            var confirmed = await _dialogService.DisplayAlert("Tracking warning", "Do you want to stop tracking?", "Yes", "No");
+            if (!confirmed)
+            {
+                return;
+            }
+
             var message = new StopTrackingTaskMessage();
             MessagingCenter.Send(message, nameof(StopTrackingTaskMessage));
         }
@@ -59,7 +80,7 @@ namespace TrackerApp
             var polyline = new Polyline
             {
                 StrokeColor = Color.ForestGreen,
-                StrokeWidth = 10f
+                StrokeWidth = 3f
             };
 
             foreach (var position in positions)
@@ -77,14 +98,6 @@ namespace TrackerApp
 
         private void HandleReceivedMessages()
         {
-            MessagingCenter.Subscribe<NewPathMessage>(this, nameof(NewPathMessage), message =>
-            {
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-
-                });
-            });
-
             MessagingCenter.Subscribe<NewPathMessage>(this, nameof(NewPathMessage), message =>
             {
                 Device.BeginInvokeOnMainThread(() =>

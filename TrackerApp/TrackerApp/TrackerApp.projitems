@@ -24,7 +24,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\StartTrackingTaskMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\StopTrackingTaskMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IDialogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IPermissionValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ITrackerService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\PermissionValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\TrackerService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TrackerModule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />

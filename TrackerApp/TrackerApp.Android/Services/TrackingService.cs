@@ -24,9 +24,9 @@ namespace TrackerApp.Droid.Services
         public override void OnDestroy()
         {
             Log.Info(TAG, "OnDestroy: The started service is shutting down.");
-            TrackerService.StopTracking();
             var notificationManager = (NotificationManager) GetSystemService(NotificationService);
             notificationManager.Cancel(Consts.SERVICE_RUNNING_NOTIFICATION_ID);
+            TrackerService.StopTracking();
             isStarted = false;
             base.OnDestroy();
         }

@@ -7,9 +7,10 @@ namespace TrackerApp
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<TrackerService>().As<ITrackerService>();
-            builder.RegisterType<TrackerService>().PropertiesAutowired();
+            builder.RegisterType<TrackerService>().As<ITrackerService>().SingleInstance();
+            builder.RegisterType<TrackerService>().PropertiesAutowired().SingleInstance();
             builder.RegisterType<DialogService>().As<IDialogService>();
+            builder.RegisterType<PermissionValidator>().As<IPermissionValidator>();
         }
     }
 }

@@ -1,7 +1,6 @@
 using Autofac;
 using Autofac.Extras.CommonServiceLocator;
 using CommonServiceLocator;
-using TrackerApp.Droid;
 
 namespace TrackerApp
 {
