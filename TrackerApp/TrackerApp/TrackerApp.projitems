@@ -18,6 +18,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Bootstrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Const.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\CurrentPositionMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\DialogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\CancelledMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\NewPathMessage.cs" />

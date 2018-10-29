@@ -21,6 +21,12 @@ namespace TrackerApp.Droid.Services
             return null;
         }
 
+        public override void OnCreate()
+        {
+            var currentPositon = TrackerService.GetCurrentPositon();
+            
+        }
+
         public override void OnDestroy()
         {
             Log.Info(TAG, "OnDestroy: The started service is shutting down.");
