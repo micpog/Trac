@@ -17,14 +17,11 @@ namespace TrackerApp.Services
 
         private readonly List<Position> _positions = new List<Position>();
         private readonly IPermissionValidator _permissionValidator;
-        private readonly IDialogService _dialogService;
-        private readonly IGeolocator _geolocator;
+        private readonly IGeolocator _geolocator = CrossGeolocator.Geolocator;
 
-        public TrackerService(IPermissionValidator permissionValidator, IDialogService dialogService)
+        public TrackerService(IPermissionValidator permissionValidator)
         {
             _permissionValidator = permissionValidator;
-            _dialogService = dialogService;
-            _geolocator = CrossGeolocator.Current;
             _geolocator.DesiredAccuracy = 1;
         }
 

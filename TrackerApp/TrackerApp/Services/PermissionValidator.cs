@@ -8,6 +8,7 @@ namespace TrackerApp.Services
     public class PermissionValidator : IPermissionValidator
     {
         private readonly IDialogService _dialogService;
+        private readonly IPermissions _permission = CrossPermissions.Permissions;
 
         public PermissionValidator(IDialogService dialogService)
         {
@@ -18,12 +19,12 @@ namespace TrackerApp.Services
         {
             try
             {
-                var current = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Location);
+                var current = await _permission.CheckPermissionStatusAsync(Permission.Location);
                 if (current != PermissionStatus.Granted)
                 {
-                    await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(Permission.Location);
+                    await _permission.ShouldShowRequestPermissionRationaleAsync(Permission.Location);
 
-                    var all = await CrossPermissions.Current.RequestPermissionsAsync(new[]
+                    var all = await _permission.RequestPermissionsAsync(new[]
                         {Permission.Location});
                     current = all[Permission.Location];
                 }
@@ -33,13 +34,13 @@ namespace TrackerApp.Services
                     return true;
                 }
 
-                await _dialogService.DisplayAlert("No permission granted",
-                    "Location is required for GPS tracking.", "Ok");
+                _dialogService.DisplayAlert("No permission granted",
+                    "Location is required for GPS tracking.", "Ok").RunSynchronously();
                 return false;
             }
             catch (Exception e)
             {
-                await _dialogService.DisplayAlert("Something wrong with permission granting", e.Message, "Ok");
+                _dialogService.DisplayAlert("Something wrong with permission granting", e.Message, "Ok").RunSynchronously();
                 throw;
             }
         }
