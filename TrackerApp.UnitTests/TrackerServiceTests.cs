@@ -31,6 +31,7 @@ namespace TrackerApp.UnitTests
             await _trackerService.StartTracking();
 
             await _geolocator.Received(1).StartListeningAsync(Arg.Any<TimeSpan>(), Arg.Any<double>());
+            _geolocator.Received(1).PositionChanged += Arg.Any<EventHandler<PositionEventArgs>>();
         }
 
         [Test]
@@ -42,6 +43,7 @@ namespace TrackerApp.UnitTests
             await _trackerService.StartTracking();
 
             await _geolocator.DidNotReceive().StartListeningAsync(Arg.Any<TimeSpan>(), Arg.Any<double>());
+            _geolocator.DidNotReceive().PositionChanged += Arg.Any<EventHandler<PositionEventArgs>>();
         }
 
         [Test]
@@ -53,6 +55,7 @@ namespace TrackerApp.UnitTests
             await _trackerService.StartTracking();
 
             await _geolocator.DidNotReceive().StartListeningAsync(Arg.Any<TimeSpan>(), Arg.Any<double>());
+            _geolocator.DidNotReceive().PositionChanged += Arg.Any<EventHandler<PositionEventArgs>>();
         }
 
         [Test]
@@ -63,7 +66,28 @@ namespace TrackerApp.UnitTests
             await _trackerService.StopTracking();
 
             await _geolocator.DidNotReceive().StopListeningAsync();
+            _geolocator.DidNotReceive().PositionChanged -= Arg.Any<EventHandler<PositionEventArgs>>();
         }
-    
+
+        [Test]
+        public async Task StopTracking_Should_stop_listening_When_geolocator_is_listening()
+        {
+            _geolocator.IsListening.Returns(true);
+
+            await _trackerService.StopTracking();
+
+            await _geolocator.Received(1).StopListeningAsync();
+            _geolocator.Received(1).PositionChanged -= Arg.Any<EventHandler<PositionEventArgs>>();
+        }
+
+        [Test]
+        public async Task StopTracking_Should_return_from_execution_When_no_positions_received()
+        {
+            _geolocator.IsListening.Returns(true);
+
+            await _trackerService.StopTracking();
+
+            
+        }
     }
 }
