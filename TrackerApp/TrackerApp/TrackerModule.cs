@@ -11,6 +11,7 @@ namespace TrackerApp
             builder.RegisterType<TrackerService>().PropertiesAutowired().SingleInstance();
             builder.RegisterType<DialogService>().As<IDialogService>();
             builder.RegisterType<PermissionValidator>().As<IPermissionValidator>();
+            builder.RegisterType<MessagingHandler>().As<IMessagingHandler>();
         }
     }
 }

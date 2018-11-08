@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using TrackerApp.Models;
 
 namespace TrackerApp.Services
 {
@@ -7,5 +9,6 @@ namespace TrackerApp.Services
         Task StartTracking();
         Task StopTracking();
         Task<Plugin.Geolocator.Abstractions.Position> GetCurrentPositon();
+        List<Position> Positions { get; }
     }
 }

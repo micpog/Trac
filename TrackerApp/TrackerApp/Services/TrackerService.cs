@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
-using TrackerApp.BackgroundProcessing;
-using Xamarin.Forms;
 using Position = TrackerApp.Models.Position;
 
 namespace TrackerApp.Services
@@ -15,13 +11,15 @@ namespace TrackerApp.Services
     {
         private const double Tolerance = 0.00001;
 
-        private readonly List<Position> _positions = new List<Position>();
+        public List<Position> Positions { get; } = new List<Position>();
         private readonly IPermissionValidator _permissionValidator;
         private readonly IGeolocator _geolocator = CrossGeolocator.Geolocator;
+        private readonly IMessagingHandler _messagingHandler;
 
-        public TrackerService(IPermissionValidator permissionValidator)
+        public TrackerService(IPermissionValidator permissionValidator, IMessagingHandler messagingHandler)
         {
             _permissionValidator = permissionValidator;
+            _messagingHandler = messagingHandler;
             _geolocator.DesiredAccuracy = 1;
         }
 
@@ -46,16 +44,12 @@ namespace TrackerApp.Services
             await _geolocator.StopListeningAsync();
             _geolocator.PositionChanged -= PositionChanged;
 
-            if (!_positions.Any() || _positions.Count < 2)
+            if (!Positions.Any() || Positions.Count < 2)
             {
                 return;
             }
 
-            var newPathMessage = new NewPathMessage { Positions = _positions };
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                MessagingCenter.Send<NewPathMessage>(newPathMessage, "NewPathMessage");
-            });
+            _messagingHandler.SendMessage(Positions);
         }
 
         public async Task<Plugin.Geolocator.Abstractions.Position> GetCurrentPositon()
@@ -65,13 +59,13 @@ namespace TrackerApp.Services
 
         private void PositionChanged(object sender, PositionEventArgs args)
         {
-            if (_positions.Any(p => Math.Abs(p.Latitude - args.Position.Latitude) < Tolerance)
-                && _positions.Any(p => Math.Abs(p.Longitude - args.Position.Longitude) < Tolerance))
+            if (Positions.Any(p => Math.Abs(p.Latitude - args.Position.Latitude) < Tolerance)
+                && Positions.Any(p => Math.Abs(p.Longitude - args.Position.Longitude) < Tolerance))
             {
                 return;
             }
 
-            _positions.Add(new Position(args.Position));
+            Positions.Add(new Position(args.Position));
         }
     }
 }
