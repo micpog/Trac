@@ -1,4 +1,4 @@
-﻿namespace TrackerApp.Droid
+namespace TrackerApp.Droid
 {
     public static class Consts
     {
