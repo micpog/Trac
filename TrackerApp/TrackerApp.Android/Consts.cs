@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-
 namespace TrackerApp.Droid
 {
     public static class Consts
     {
-        public static string ChannelID = "trackingServiceChannel";
+        public const string ChannelID = "trackingServiceChannel";
+        public const int SERVICE_RUNNING_NOTIFICATION_ID = 1234;
+
+        public const string SERVICE_STARTED_KEY = "has_service_been_started";
+
+        public const string ACTION_START_SERVICE = "TrackerApp.Droid.action.START_SERVICE";
+        public const string ACTION_STOP_SERVICE = "TrackerApp.Droid.action.STOP_SERVICE";
+        public const string ACTION_MAIN_ACTIVITY = "TrackerApp.Droid.action.MAIN_ACTIVITY";
     }
 }

@@ -11,8 +11,8 @@ namespace TrackerApp.Models
             Timestamp = position.Timestamp;
         }
 
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public DateTimeOffset Timestamp { get; set; }
+        public double Latitude { get; }
+        public double Longitude { get; }
+        public DateTimeOffset Timestamp { get; }
     }
 }

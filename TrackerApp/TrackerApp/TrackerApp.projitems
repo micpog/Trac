@@ -16,8 +16,26 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Bootstrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Const.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\CurrentPositionMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\CrossGeolocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\CrossPermissions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\DialogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\CancelledMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\NewPathMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\StartTrackingTaskMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForegroundProcessing\StopTrackingTaskMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IDialogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IMessagingHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IPermissionValidator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ITrackerService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\MessagingHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\PermissionValidator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\TrackerService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TrackerModule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -26,7 +44,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)RelayCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)ViewModels\" />
     <Folder Include="$(MSBuildThisFileDirectory)Views\" />
   </ItemGroup>
 </Project>

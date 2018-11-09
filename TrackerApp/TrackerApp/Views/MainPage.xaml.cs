@@ -1,5 +1,5 @@
-﻿using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using TrackerApp.ViewModels;
+using Xamarin.Forms;
 
 namespace TrackerApp
 {
@@ -8,7 +8,7 @@ namespace TrackerApp
         public MainPage()
         {
             InitializeComponent();
-            this.BindingContext = new MainPageViewModel();
+            this.BindingContext = ViewModelLocator.MainPageViewModel;
         }
     }
 }

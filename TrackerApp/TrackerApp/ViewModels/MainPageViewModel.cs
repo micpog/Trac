@@ -1,49 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Plugin.Geolocator;
-using Plugin.Geolocator.Abstractions;
+using System.Threading.Tasks;
+using TrackerApp.BackgroundProcessing;
+using TrackerApp.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 using Xamarin.Forms.GoogleMaps.Bindings;
+using MessagingCenter = Xamarin.Forms.MessagingCenter;
 using Position = TrackerApp.Models.Position;
 
 namespace TrackerApp
 {
     public class MainPageViewModel : BaseViewModel
     {
-        private const double Tolerance = 0.00001;
-
+        private readonly IDialogService _dialogService;
         private ObservableCollection<Position> _positions;
-        private readonly IGeolocator _geolocator;
-        private bool _canDisplay;
 
-        public MainPageViewModel()
+        public MainPageViewModel(IDialogService dialogService)
         {
-            _geolocator = CrossGeolocator.Current;
+            _dialogService = dialogService;
             StartTrackingCommand = new RelayCommand(StartTracking);
             StopTrackingCommand = new RelayCommand(StopTracking);
+
+            HandleReceivedMessages();
         }
 
         public RelayCommand StartTrackingCommand { get; }
         public RelayCommand StopTrackingCommand { get; }
 
-        public bool CanDisplay
-        {
-            get => _canDisplay;
-            private set
-            {
-                _canDisplay = value;
-                OnPropertyChanged(nameof(CanDisplay));
-            }
-        }
+        public MoveCameraRequest MoveCameraRequest { get; } = new MoveCameraRequest();
 
-        public MoveCameraRequest MoveCameraRequest { get; set; } = new MoveCameraRequest();
-
-        public ObservableCollection<Circle> Circles { get; set; } = new ObservableCollection<Circle>();
-
-        public ObservableCollection<Polyline> Polylines { get; set; } = new ObservableCollection<Polyline>();
+        public ObservableCollection<Polyline> Polylines { get; set; }
 
         public ObservableCollection<Position> Positions
         {
@@ -60,62 +48,31 @@ namespace TrackerApp
 
         private async void StartTracking()
         {
-            Console.WriteLine("####### Checking location is enabled.");
-            if (!_geolocator.IsGeolocationEnabled)
+            if (_positions != null && _positions.Any())
             {
-                await DisplayAlert("Location", "Please turn on location services.", "Ok");
-                return;
+                var confirmed = await _dialogService.DisplayAlert("Warning", "Confirm to clear previous path", "Confirm", "Cancel");
+                if (!confirmed)
+                {
+                    return;
+                }
+
+                _positions.Clear();
             }
 
-            var result = await Plugin.Permissions.CrossPermissions.Current.RequestPermissionsAsync(new[] { Plugin.Permissions.Abstractions.Permission.Location });
-            var status = result[Plugin.Permissions.Abstractions.Permission.Location];
-
-            Console.WriteLine("####### Checking permissions.");
-            if (status != Plugin.Permissions.Abstractions.PermissionStatus.Granted)
-            {
-                await DisplayAlert("Location", "Location is required for GPS. Device data cannot be saved.", "Cancel");
-                return;
-            }
-
-            if (_geolocator.IsListening)
-            {
-                return;
-            }
-
-            CanDisplay = false;
-            this.Positions = new ObservableCollection<Position>();
-            await _geolocator.StartListeningAsync(TimeSpan.FromSeconds(2), 0);
-            _geolocator.PositionChanged += PositionChanged;
+            var message = new StartTrackingTaskMessage();
+            MessagingCenter.Send(message, nameof(StartTrackingTaskMessage));
         }
 
         private async void StopTracking()
         {
-            if (!_geolocator.IsListening)
+            var confirmed = await _dialogService.DisplayAlert("Tracking warning", "Do you want to stop tracking?", "Yes", "No");
+            if (!confirmed)
             {
                 return;
             }
 
-            await _geolocator.StopListeningAsync();
-            _geolocator.PositionChanged -= PositionChanged;
-
-            CanDisplay = true;
-            if (Positions.Count < 2)
-            {
-                return;
-            }
-
-            DrawPolyline(Positions.ToList());
-        }
-
-        private void PositionChanged(object sender, PositionEventArgs args)
-        {
-            if (Positions.Any(p => Math.Abs(p.Latitude - args.Position.Latitude) < Tolerance)
-            && Positions.Any(p => Math.Abs(p.Longitude - args.Position.Longitude) < Tolerance))
-            {
-                return;
-            }
-
-            Positions.Add(new Position(args.Position));
+            var message = new StopTrackingTaskMessage();
+            MessagingCenter.Send(message, nameof(StopTrackingTaskMessage));
         }
 
         private void DrawPolyline(List<Position> positions)
@@ -123,7 +80,7 @@ namespace TrackerApp
             var polyline = new Polyline
             {
                 StrokeColor = Color.ForestGreen,
-                StrokeWidth = 10f
+                StrokeWidth = 3f
             };
 
             foreach (var position in positions)
@@ -135,7 +92,20 @@ namespace TrackerApp
             MoveCameraRequest.MoveCamera
             (CameraUpdateFactory.NewCameraPosition(
                 new CameraPosition(
-                    new Xamarin.Forms.GoogleMaps.Position(polyline.Positions.First().Latitude, polyline.Positions.First().Longitude), 9d)));
+                    new Xamarin.Forms.GoogleMaps.Position(
+                        polyline.Positions.First().Latitude, polyline.Positions.First().Longitude), 9d)));
+        }
+
+        private void HandleReceivedMessages()
+        {
+            MessagingCenter.Subscribe<NewPathMessage>(this, nameof(NewPathMessage), message =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Positions = new ObservableCollection<Position>(message.Positions);
+                    DrawPolyline(Positions.ToList());
+                });
+            });
         }
     }
 }
